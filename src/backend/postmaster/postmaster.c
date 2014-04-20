@@ -803,21 +803,30 @@ PostmasterMain(int argc, char *argv[])
 							   *value;
 
 					ParseLongOption(optarg, &name, &value);
-					if (!value)
+
+#ifdef WIN32
+					if (strcmp(name, "background") == 0)
+						IsBackgroundPostmaster = true;
+					else
+#endif
 					{
-						if (opt == '-')
-							ereport(ERROR,
-									(errcode(ERRCODE_SYNTAX_ERROR),
-									 errmsg("--%s requires a value",
-											optarg)));
-						else
-							ereport(ERROR,
-									(errcode(ERRCODE_SYNTAX_ERROR),
-									 errmsg("-c %s requires a value",
-											optarg)));
+						if (!value)
+						{
+							if (opt == '-')
+								ereport(ERROR,
+										(errcode(ERRCODE_SYNTAX_ERROR),
+										 errmsg("--%s requires a value",
+												optarg)));
+							else
+								ereport(ERROR,
+										(errcode(ERRCODE_SYNTAX_ERROR),
+										 errmsg("-c %s requires a value",
+												optarg)));
+						}
+
+						SetConfigOption(name, value, PGC_POSTMASTER, PGC_S_ARGV);
 					}
 
-					SetConfigOption(name, value, PGC_POSTMASTER, PGC_S_ARGV);
 					free(name);
 					if (value)
 						free(value);

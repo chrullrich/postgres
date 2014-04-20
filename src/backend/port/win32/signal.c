@@ -42,6 +42,8 @@ static pqsigfunc pg_signal_defaults[PG_SIGNAL_COUNT];
 static DWORD WINAPI pg_signal_thread(LPVOID param);
 static BOOL WINAPI pg_console_handler(DWORD dwCtrlType);
 
+extern bool IsBackgroundPostmaster;
+extern bool IsUnderPostmaster;
 
 /*
  * pg_usleep --- delay the specified number of microseconds, but
@@ -347,13 +349,22 @@ pg_signal_thread(LPVOID param)
 static BOOL WINAPI
 pg_console_handler(DWORD dwCtrlType)
 {
-	if (dwCtrlType == CTRL_C_EVENT ||
-		dwCtrlType == CTRL_BREAK_EVENT ||
-		dwCtrlType == CTRL_CLOSE_EVENT ||
-		dwCtrlType == CTRL_SHUTDOWN_EVENT)
+	switch (dwCtrlType)
 	{
+	case CTRL_C_EVENT:
+	case CTRL_BREAK_EVENT:
+		/* Ignore if started with "pg_ctl start". */
+		if (IsUnderPostmaster || IsBackgroundPostmaster)
+			break;
+		/* fall through */
+	case CTRL_CLOSE_EVENT:
+	case CTRL_SHUTDOWN_EVENT:
 		pg_queue_signal(SIGINT);
-		return TRUE;
+		break;
+	default:
+		return FALSE;
 	}
-	return FALSE;
+
+	return TRUE;
 }
+

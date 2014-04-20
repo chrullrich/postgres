@@ -152,6 +152,10 @@ extern PGDLLIMPORT bool IsUnderPostmaster;
 extern bool IsBackgroundWorker;
 extern PGDLLIMPORT bool IsBinaryUpgrade;
 
+#ifdef WIN32
+extern bool IsBackgroundPostmaster;
+#endif
+
 extern bool ExitOnAnyError;
 
 extern PGDLLIMPORT char *DataDir;
