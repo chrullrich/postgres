@@ -587,6 +587,30 @@ PostgreSQL documentation
      </varlistentry>
     </variablelist>
    </refsect2>
+
+   <refsect2>
+    <title>Platform-specific Options</title>
+
+    <variablelist>
+     <varlistentry>
+      <term><option>--background</option></term>
+      <listitem>
+       <para>
+        This option is effective on Windows only and ignored on all
+        other platforms.
+       </para>
+       <para>
+        It instructs the server to ignore the signals caused by pressing
+        <keycombo action="simul"><keycap>Ctrl</><keycap>C</></> or
+        <keycombo action="simul"><keycap>Ctrl</><keycap>Break</></>
+        in a console window. It is used automatically by
+        <command>pg_ctl</command> when called with the
+        <option>start</option> subcommand.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </refsect2>
  </refsect1>
 
  <refsect1>
