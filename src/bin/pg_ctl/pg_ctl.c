@@ -485,10 +485,10 @@ start_postmaster(void)
 	PROCESS_INFORMATION pi;
 
 	if (log_file != NULL)
-		snprintf(cmd, MAXPGPATH, "CMD /C \"\"%s\" %s%s < \"%s\" >> \"%s\" 2>&1\"",
+		snprintf(cmd, MAXPGPATH, "CMD /C \"\"%s\" %s%s --background < \"%s\" >> \"%s\" 2>&1\"",
 				 exec_path, pgdata_opt, post_opts, DEVNULL, log_file);
 	else
-		snprintf(cmd, MAXPGPATH, "CMD /C \"\"%s\" %s%s < \"%s\" 2>&1\"",
+		snprintf(cmd, MAXPGPATH, "CMD /C \"\"%s\" %s%s --background < \"%s\" 2>&1\"",
 				 exec_path, pgdata_opt, post_opts, DEVNULL);
 
 	if (!CreateRestrictedProcess(cmd, &pi, false))
